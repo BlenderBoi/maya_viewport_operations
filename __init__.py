@@ -1,9 +1,9 @@
 bl_info = {
-    "name": "Simple Smooth Preview",
+    "name": "Maya Viewport Operations",
     "author": "TinkerBoi",
     "version": (1, 0),
     "blender": (4, 2, 0),
-    "description": "Smooth Preview that acts similar like in maya 3",
+    "description": "Maya Viewport Operations",
     "wiki_url": "",
     "category": "Utility",
 }

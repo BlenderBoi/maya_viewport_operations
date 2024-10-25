@@ -1,5 +1,9 @@
-# Smooth Preview
+# Maya Viewport Operations
 
-![Banner](https://user-images.githubusercontent.com/79613445/210192444-2358afaa-5dd2-4283-9f6e-4482f4a72f7b.png)
+This addon simulates the viewport operations (1, 2, 3, 4, 5, 6, 7) in maya to blender
 
-Smooth preview is an addon intended to emulate the "3" in maya. It toggles the the subdivision surface of multiple objects. Works on multiple selected objects
+## Todo
+
+- Add Buttons to the Top of the Viewport
+- More Preferences Toggle (Enable it in Certain Mode Only, Enable only Some of it)
+- Auto Disable the Default 1, 2, 3, 4, 5, 6, 7 Buttons
