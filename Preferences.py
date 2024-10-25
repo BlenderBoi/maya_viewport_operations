@@ -13,6 +13,7 @@ class SP_user_preferences(bpy.types.AddonPreferences):
     No_Shade_Smooth: bpy.props.BoolProperty(default=False)
 
     subdivision_levels: bpy.props.IntProperty(default=2, min=1, soft_max=8)
+    use_shade_smooth: bpy.props.BoolProperty(default=True)
 
     def draw(self, context):
 

@@ -45,22 +45,44 @@ def create_node_chain(node_group, node_names, node_offset=300):
 
 def create_smooth_preview():
 
+    pos_offset = 300
+
     node_group = create_geometry_nodegroup("smooth_preview")
-
-    node_chain = ["GeometryNodeSubdivisionSurface", "GeometryNodeSetShadeSmooth"]
-    create_node_chain(node_group, node_chain)
-
-    input_node = node_group.nodes.get("Group Input")
-    subdiv_node = node_group.nodes.get("Subdivision Surface")
-    shadesmooth_node = node_group.nodes.get("Set Shade Smooth")
 
     socket = node_group.interface.new_socket("Level", socket_type="NodeSocketInt")
     socket.default_value = 2
-    socket = node_group.interface.new_socket("Shade Smooth", socket_type="NodeSocketBool")
+    socket = node_group.interface.new_socket("Use Shade Smooth", socket_type="NodeSocketBool")
     socket.default_value = True
 
-    node_group.links.new(input_node.outputs[1], subdiv_node.inputs[1])
-    node_group.links.new(input_node.outputs[2], shadesmooth_node.inputs[2])
+
+
+    node_in = node_group.nodes.new("NodeGroupInput")
+    node_in.location.x = 0
+
+    node_subdivision = node_group.nodes.new("GeometryNodeSubdivisionSurface")
+    node_subdivision.location.x = pos_offset * 1
+
+
+    node_shade_smooth = node_group.nodes.new("GeometryNodeSetShadeSmooth")
+    node_shade_smooth.location.x = pos_offset * 2
+    node_shade_smooth.location.y = -pos_offset * 1
+
+
+    node_switch = node_group.nodes.new("GeometryNodeSwitch")
+    node_switch.location.x = pos_offset * 3
+
+    node_out = node_group.nodes.new("NodeGroupOutput")
+    node_out.location.x = pos_offset * 4
+    
+
+
+    node_group.links.new(node_in.outputs[0], node_subdivision.inputs[0])
+    node_group.links.new(node_in.outputs[1], node_subdivision.inputs[1])
+    node_group.links.new(node_in.outputs[2], node_switch.inputs[0])
+    node_group.links.new(node_subdivision.outputs[0], node_switch.inputs[1])
+    node_group.links.new(node_switch.outputs[0], node_out.inputs[0])
+    node_group.links.new(node_shade_smooth.outputs[0], node_switch.inputs[2])
+    node_group.links.new(node_subdivision.outputs[0], node_shade_smooth.inputs[0])
 
     return node_group
 
@@ -112,12 +134,17 @@ class SmoothPreview_OT_Set_Smooth(bpy.types.Operator):
 
             if obj.type == "MESH":
                 modifier = ensure_geometry_node_modifier(obj, "smooth_preview", node_group)
-                
+
+                modifier["Socket_2"] = preferences.subdivision_levels
+                modifier["Socket_3"] = preferences.use_shade_smooth
 
                 if self.smooth:
                     modifier.show_viewport = True
                     modifier.show_render = True
                     modifier.show_on_cage = True
+
+
+                    
                 else:
                     modifier.show_viewport = False
                     modifier.show_render = False
@@ -145,7 +172,7 @@ class SmoothPreview_MT_Smooth_Menu(bpy.types.Menu):
 
         preferences = context.preferences.addons[__package__].preferences
         layout.prop(preferences, "subdivision_levels", text="Levels")
-        layout.prop(preferences, "No_Shade_Smooth", text="Disable Shade Smooth / Flat")
+        layout.prop(preferences, "use_shade_smooth", text="Use Shade Smooth")
 
         #layout.operator("vh.apply_smooth", text="Apply")
 
